@@ -1,0 +1,42 @@
+<h2 class="title">Productos</h2>
+
+<section class="products-grid">
+  {{#each products}}
+    <article class="product-card">
+      <h3>{{this.title}}</h3>
+      <p>$ {{this.price}}</p>
+
+      <!-- BOTÓN AGREGAR -->
+      <button class="btn secondary"
+        onclick="addToCart('{{this._id}}')">
+        Agregar al carrito
+      </button>
+
+      <!-- BOTÓN VER CARRITO -->
+      <a href="/carts/{{../cartId}}" class="btn">
+        Ver carrito
+      </a>
+    </article>
+  {{else}}
+    <p>No hay productos</p>
+  {{/each}}
+</section>
+
+<script>
+  const CART_ID = "{{cartId}}";
+
+  function addToCart(productId) {
+    fetch(`/api/carts/${CART_ID}/products/${productId}`, {
+      method: "POST"
+    })
+    .then(res => res.json())
+    .then(() => {
+      alert("Producto agregado al carrito");
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error al agregar producto");
+    });
+  }
+</script>
+

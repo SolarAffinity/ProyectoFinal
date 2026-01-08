@@ -1,0 +1,53 @@
+<h2 class="title">Mi Carrito</h2>
+
+<section id="cart">
+  {{#each cart.products}}
+    <div class="cart-item">
+      <div>
+        <h3>{{this.product.title}}</h3>
+        <p>Cantidad: {{this.quantity}}</p>
+      </div>
+      <p>$ {{this.product.price}}</p>
+    </div>
+  {{else}}
+    <p>Carrito vacío</p>
+  {{/each}}
+</section>
+
+<div class="cart-total">
+  <strong>Total: $<span id="total">0</span></strong>
+</div>
+
+<div style="margin-top: 2rem; text-align:right">
+  <button class="btn" onclick="vaciarCarrito()">Vaciar carrito</button>
+  <a id="whatsapp" class="btn secondary" target="_blank">
+    Finalizar por WhatsApp
+  </a>
+</div>
+
+<script>
+  const CART_ID = "{{cartId}}";
+  const products = {{{json cart.products}}};
+
+  let total = 0;
+  let message = "Hola, quiero cotizar:%0A";
+
+  products.forEach(p => {
+    total += p.product.price * p.quantity;
+    message += `- ${p.product.title} x ${p.quantity}%0A`;
+  });
+
+  message += `%0ATotal: $${total}`;
+
+  document.getElementById("total").innerText = total;
+
+  document.getElementById("whatsapp").href =
+    `https://wa.me/56912345678?text=${message}`;
+
+  function vaciarCarrito() {
+    fetch(`/api/carts/${CART_ID}`, {
+      method: "DELETE"
+    })
+    .then(() => location.reload());
+  }
+</script>
